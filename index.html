@@ -1,100 +1,116 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ATV - AIRBNB</title>
-    <link rel="stylesheet" href="css/reset.css" />
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
-    <main>
-      <section>
-        <form action="#" method="post">
-          <h1>
-            <span id="valor_noite">R$620</span>
-            <span class="pequeno">noite</span>
-          </h1>
-          <div class="todos">
-            <fieldset class="datas">
-              <div class="esquerda">
-                <p><label for="checkin">CHECK-IN</label></p>
-                <input
-                  class="data"
-                  type="date"
-                  required
-                  name="checkin"
-                  id="checkin" />
-              </div>
-              <div>
-                <p><label for="checkout">CHECKOUT</label></p>
-                <input
-                  class="data"
-                  type="date"
-                  required
-                  name="checkout"
-                  id="checkout" />
-              </div>
-            </fieldset>
-            <div class="hospedes">
-              <p><label for="hospede">HÓSPEDES</label></p>
-              <select name="hospede" id="hospede">
-                <option value="1">1 Hóspede</option>
-                <option value="2">2 Hóspedes</option>
-                <option value="3">3 Hóspedes</option>
-                <option value="4">4 Hóspedes</option>
-              </select>
-            </div>
-          </div>
-          <button id="reserva">Reservar</button>
-        </form>
+<html lang="pt-br">
 
-        <div class="results">
-          <p>Você ainda não será cobrado</p>
-          <div class="listas">
-            <ul>
-              <li><span id="subtotal">R$620 X 0 noites</span></li>
-              <li><span>Taxa de limpeza</span></li>
-              <li><span>Taxa de serviço do Airbnb</span></li>
-            </ul>
-            <ul class="valores">
-              <li><span id="valorsub">R$0</span></li>
-              <li><span id="taxa_limpeza">R$120</span></li>
-              <li><span id="taxa_servico">R$0</span></li>
-            </ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/c4a85ae6a5.js" crossorigin="anonymous"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <title>Prova 1 DevWeb</title>
+</head>
+
+<body>
+  <main>
+    <section class="reserva-container">
+      <form class="reserva-form">
+        <h1><span id="valor_noite">R$620</span> <span class="pequeno">noite</span></h1>
+
+        <div class="input-group">
+          <div>
+            <label for="checkin">CHECK-IN</label>
+            <input type="date" id="checkin" name="checkin" class="data" required />
           </div>
-          <hr />
-          <p>Total sem impostos: <span id="total">R$0</span></p>
+          <div>
+            <label for="checkout">CHECKOUT</label>
+            <input type="date" id="checkout" name="checkout" class="data" required />
+          </div>
         </div>
-      </section>
 
-      <script>
-        const reserva = document.getElementById("reserva");
-        const checkout = document.getElementById("checkout");
+        <div class="input-full">
+          <label for="hospede">HÓSPEDES</label>
+          <select id="hospede" name="hospede">
+            <option value="1">1 Hóspede</option>
+            <option value="2">2 Hóspedes</option>
+            <option value="3">3 Hóspedes</option>
+            <option value="4">4 Hóspedes</option>
+          </select>
+        </div>
 
-        checkout.addEventListener("change", function () {
-          const data_saida = new Date(this.value);
-          const data_entrada = new Date(document.getElementById("checkin").value);
-          const diarias = (data_saida - data_entrada) / 86400000;
-          const subtotal = document.getElementById("subtotal");
-          const hospedes = parseInt(document.getElementById("hospede").value);
+        <button type="submit" id="reserva">Reservar</button>
+      </form>
 
-          const noite = document.getElementById("valor_noite");
-          const valor_noite = parseFloat(noite.innerText.replace("R$", "").trim());
+      <div class="results">
+        <p id="mensagem_sem-valor">Você ainda não será cobrado</p>
 
-          subtotal.innerText = `R$${valor_noite} X ${diarias} noites`;
+        <div class="listas">
+          <ul>
+            <li>
+                 <p><span id="subtotal">R$620 X 0 noites</span></p>
+            </li>
+            <li>
+              <p>Taxa de limpeza</p>
+            </li>
+            <li>
+              <p>Taxa de serviço do Airbnb</p>
+            </li>
+          </ul>
+          <ul>
+            <li><p><span id="valorsub">R$0</span></p></li>
+            <li><p><span id="taxa_limpeza">R$120</span></p></li>
+            <li><p><span id="taxa_servico">R$0</span></p></li>
+          </ul>
+        </div>
+        <hr />
+        <p>Total sem impostos: <span id="valor-total-semimp">R$0,00</span></p>
+      </div>
+    </section>
+  </main>
+  <script>
+    let reserva = document.getElementById("reserva");
+    let checkout = document.getElementById("checkout");
+    let checkin = document.getElementById("checkin");
+    let hospedes = document.getElementById("hospede");
 
-          const valorsub = valor_noite * diarias + (hospedes - 1) * 0.2;
-          const taxa_servico = valorsub * 0.15;
+    checkout.addEventListener("change", calcular);
+    checkin.addEventListener("change", calcular);
+    hospedes.addEventListener("change", calcular);
 
-          document.getElementById("valorsub").innerText = `R$${valorsub.toFixed(2)}`;
-          document.getElementById("taxa_servico").innerText = `R$${taxa_servico.toFixed(2)}`;
+    function calcular() {
+      let data_saida = new Date(document.getElementById("checkout").value);
+      let data_entrada = new Date(document.getElementById("checkin").value);
+      let diarias = (data_saida - data_entrada) / 86400000;
+      let subtotal = document.getElementById("subtotal");
+      let hospedes = document.getElementById("hospede").value;
 
-          const valor_limpeza = parseFloat(document.getElementById("taxa_limpeza").innerText.replace("R$", ""));
-          const total = valorsub + valor_limpeza + taxa_servico;
-          document.getElementById("total").innerText = `R$${total.toFixed(2)}`;
-        });
-      </script>
-    </main>
-  </body>
+      let noite = document.getElementById("valor_noite");
+      let valor_noite = parseFloat(noite.innerText.substring(2));
+
+      subtotal.innerText =
+        "R$" + valor_noite.toFixed(2) + " X " + diarias + " noites";
+
+      let valorsub = valor_noite * (1 + 0.2 * (hospedes - 1)) * diarias;
+      let taxa_servico = valorsub * 0.15;
+
+      let taxa_servicohtml = document.getElementById("taxa_servico");
+      taxa_servicohtml.innerText = "R$" + taxa_servico.toFixed(2);
+
+      let taxa_limpeza = document.getElementById("taxa_limpeza");
+      let valor_limpeza = parseFloat(taxa_limpeza.innerText.substring(2));
+
+      let valorsubhtml = document.getElementById("valorsub");
+      valorsubhtml.innerText = "R$" + valorsub.toFixed(2);
+
+      let total = valorsub + valor_limpeza + taxa_servico;
+      let totalhtml = document.getElementById("total");
+      totalhtml.innerText = "R$" + total.toFixed(2);
+    }
+  </script>
+</body>
+
 </html>
